@@ -17,7 +17,7 @@ interface Cierre {
   notes: string | null;
   created_at: string;
   images: { url: string; detail?: string }[] | null;
-  people: Member | null;
+  people: Member[] | null;
 }
 
 interface CierresTableProps {
@@ -121,7 +121,7 @@ export default function CierresTable({ businessId, cierres }: CierresTableProps)
                     {isPositive ? "+" : ""}{formatCurrency(diff)}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-zinc-900 dark:text-zinc-50">
-                      {cierre.people?.full_name || "N/A"}
+                      {cierre.people?.[0]?.full_name || "N/A"}
                   </td>
                   <td className="px-6 py-4 text-sm text-zinc-500">
                     {cierre.notes || "-"}

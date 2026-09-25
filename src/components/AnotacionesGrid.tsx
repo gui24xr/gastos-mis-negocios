@@ -15,7 +15,7 @@ interface Nota {
   note_date: string;
   created_at: string;
   images: { url: string; detail?: string }[] | null;
-  people: Member | null;
+  people: Member[] | null;
 }
 
 interface AnotacionesGridProps {
@@ -90,7 +90,7 @@ export default function AnotacionesGrid({ businessId, notes }: AnotacionesGridPr
               </div>
               <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
                 <span>
-                  {note.people?.full_name || "Sistema"}
+                  {note.people?.[0]?.full_name || "Sistema"}
                 </span>
                 <div className="flex items-center gap-3">
                   {hasPhotos && (

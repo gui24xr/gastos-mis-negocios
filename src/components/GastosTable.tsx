@@ -16,7 +16,7 @@ interface Expense {
   spent_at: string;
   created_at: string;
   images: { url: string; detail?: string }[] | null;
-  people: Member | null;
+  people: Member[] | null;
 }
 
 interface GastosTableProps {
@@ -118,7 +118,7 @@ export default function GastosTable({ businessId, expenses }: GastosTableProps) 
                     {formatCurrency(expense.amount)}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-zinc-500">
-                    {expense.people?.full_name || "N/A"}
+                    {expense.people?.[0]?.full_name || "N/A"}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     {hasPhotos ? (
