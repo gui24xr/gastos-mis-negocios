@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import ImageUploader from "./ImageUploader";
+
+interface Image {
+  url: string;
+  detail?: string;
+}
 
 interface NuevoCierreFormProps {
   businessId: string;
@@ -15,6 +21,7 @@ export default function NuevoCierreForm({ businessId, personId }: NuevoCierreFor
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [images, setImages] = useState<Image[]>([]);
 
   const [closingDate, setClosingDate] = useState(new Date().toISOString().split("T")[0]);
   const [expectedAmount, setExpectedAmount] = useState("");
@@ -28,7 +35,6 @@ export default function NuevoCierreForm({ businessId, personId }: NuevoCierreFor
 
     const expected = parseFloat(expectedAmount) || 0;
     const counted = parseFloat(countedAmount) || 0;
-    const difference = counted - expected;
 
     const { error } = await supabase.from("cash_closings").insert({
       business_id: businessId,
@@ -36,8 +42,8 @@ export default function NuevoCierreForm({ businessId, personId }: NuevoCierreFor
       closing_date: closingDate,
       expected_amount: expected,
       counted_amount: counted,
-      difference: difference,
       notes: notes || null,
+      ...(images.length > 0 && { images }),
     });
 
     if (error) {
@@ -116,6 +122,8 @@ export default function NuevoCierreForm({ businessId, personId }: NuevoCierreFor
             className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-zinc-900 placeholder-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 resize-none"
           />
         </div>
+
+        <ImageUploader businessId={businessId} folder="cash-closings" images={images} onImagesChange={setImages} />
 
         <div className="flex gap-3">
           <Link

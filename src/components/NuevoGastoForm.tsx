@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import ImageUploader from "./ImageUploader";
+
+interface Image {
+  url: string;
+  detail?: string;
+}
 
 interface NuevoGastoFormProps {
   businessId: string;
@@ -15,6 +21,7 @@ export default function NuevoGastoForm({ businessId, personId }: NuevoGastoFormP
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [images, setImages] = useState<Image[]>([]);
 
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -33,6 +40,7 @@ export default function NuevoGastoForm({ businessId, personId }: NuevoGastoFormP
       description,
       category: category || null,
       spent_at: spentAt,
+      ...(images.length > 0 && { images }),
     });
 
     if (error) {
@@ -109,6 +117,8 @@ export default function NuevoGastoForm({ businessId, personId }: NuevoGastoFormP
             className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           />
         </div>
+
+        <ImageUploader businessId={businessId} folder="expenses" images={images} onImagesChange={setImages} />
 
         <div className="flex gap-3">
           <Link

@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import ImageUploader from "./ImageUploader";
+
+interface Image {
+  url: string;
+  detail?: string;
+}
 
 interface NuevaNotaFormProps {
   businessId: string;
@@ -15,6 +21,7 @@ export default function NuevaNotaForm({ businessId, personId }: NuevaNotaFormPro
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [images, setImages] = useState<Image[]>([]);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -31,6 +38,7 @@ export default function NuevaNotaForm({ businessId, personId }: NuevaNotaFormPro
       title: title || null,
       content: content || null,
       note_date: noteDate,
+      ...(images.length > 0 && { images }),
     });
 
     if (error) {
@@ -91,6 +99,8 @@ export default function NuevaNotaForm({ businessId, personId }: NuevaNotaFormPro
             className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           />
         </div>
+
+        <ImageUploader businessId={businessId} folder="notes" images={images} onImagesChange={setImages} />
 
         <div className="flex gap-3">
           <Link
